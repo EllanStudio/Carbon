@@ -1,3 +1,4 @@
+import org.gradle.api.attributes.java.TargetJvmVersion
 import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml.Load
 import xyz.jpenilla.runpaper.task.RunServer
 
@@ -13,8 +14,16 @@ plugins {
 dependencies {
   implementation(projects.carbonchatCommon)
 
-  // Server
-  compileOnly(libs.foliaApi)
+  // Paper 26.3 is published with a JVM 25 variant. Keep Carbon bytecode at
+  // the base Java 21 target while selecting that API variant explicitly.
+  compileOnly(libs.paperApi) {
+    attributes {
+      attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
+  }
+  // Paper API carries the region-scheduler signatures used by the optional Folia path.
+  // Do not add a separate Folia API here: its paper-mojangapi capability conflicts
+  // with the Paper 26.3 API variant.
   implementation(libs.paperTrail)
 
   // Commands
@@ -62,13 +71,13 @@ tasks {
   }
   val luckperms = FetchLuckPermsJar.setup(project, "bukkit")
   withType(RunServer::class).configureEach {
-    version.set("1.21.4")
+    version.set("26.3")
     downloadPlugins {
       github("MiniPlaceholders", "MiniPlaceholders", libs.versions.miniplaceholders.get(), "MiniPlaceholders-Paper-${libs.versions.miniplaceholders.get()}.jar")
       // TODO: install MP extensions to its folder
       // github("MiniPlaceholders", "PlaceholderAPI-Expansion", "2.1.0", "PlaceholderAPI-Expansion-2.1.0.jar")
       hangar("PlaceholderAPI", libs.versions.placeholderapi.get())
-      modrinth("parties", libs.versions.adpParties.get())
+      hangar("Parties", libs.versions.adpParties.get())
     }
     pluginJars.from(luckperms.flatMap { it.outputFile })
     providers.gradleProperty("smokeTest").map { it.toBoolean() }.getOrElse(false).let { smokeTest ->
@@ -142,6 +151,7 @@ carbonPermission.permissions.get().forEach {
 
 publishMods.modrinth {
   modLoaders.addAll("paper", "folia")
+  minecraftVersions.add("26.3")
 }
 
 configurations.runtimeDownload {
