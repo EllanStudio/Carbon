@@ -21,8 +21,9 @@ dependencies {
       attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
     }
   }
-  // Retain the Folia API surface for the optional region scheduler.
-  compileOnly(libs.foliaApi)
+  // Paper API carries the region-scheduler signatures used by the optional Folia path.
+  // Do not add a separate Folia API here: its paper-mojangapi capability conflicts
+  // with the Paper 26.3 API variant.
   implementation(libs.paperTrail)
 
   // Commands
