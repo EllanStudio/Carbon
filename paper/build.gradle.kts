@@ -14,6 +14,8 @@ dependencies {
   implementation(projects.carbonchatCommon)
 
   // Server
+  compileOnly(libs.paperApi)
+  // Retain the Folia API surface for the optional region scheduler.
   compileOnly(libs.foliaApi)
   implementation(libs.paperTrail)
 
@@ -62,7 +64,7 @@ tasks {
   }
   val luckperms = FetchLuckPermsJar.setup(project, "bukkit")
   withType(RunServer::class).configureEach {
-    version.set("1.21.4")
+    version.set("26.3")
     downloadPlugins {
       github("MiniPlaceholders", "MiniPlaceholders", libs.versions.miniplaceholders.get(), "MiniPlaceholders-Paper-${libs.versions.miniplaceholders.get()}.jar")
       // TODO: install MP extensions to its folder
@@ -142,6 +144,7 @@ carbonPermission.permissions.get().forEach {
 
 publishMods.modrinth {
   modLoaders.addAll("paper", "folia")
+  minecraftVersions.add("26.3")
 }
 
 configurations.runtimeDownload {
