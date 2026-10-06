@@ -70,7 +70,7 @@ tasks {
       // TODO: install MP extensions to its folder
       // github("MiniPlaceholders", "PlaceholderAPI-Expansion", "2.1.0", "PlaceholderAPI-Expansion-2.1.0.jar")
       hangar("PlaceholderAPI", libs.versions.placeholderapi.get())
-      modrinth("parties", libs.versions.adpParties.get())
+      hangar("Parties", libs.versions.adpParties.get())
     }
     pluginJars.from(luckperms.flatMap { it.outputFile })
     providers.gradleProperty("smokeTest").map { it.toBoolean() }.getOrElse(false).let { smokeTest ->
