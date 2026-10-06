@@ -1,3 +1,4 @@
+import org.gradle.api.attributes.java.TargetJvmVersion
 import xyz.jpenilla.resourcefactory.paper.PaperPluginYaml.Load
 import xyz.jpenilla.runpaper.task.RunServer
 
@@ -13,8 +14,13 @@ plugins {
 dependencies {
   implementation(projects.carbonchatCommon)
 
-  // Server
-  compileOnly(libs.paperApi)
+  // Paper 26.3 is published with a JVM 25 variant. Keep Carbon bytecode at
+  // the base Java 21 target while selecting that API variant explicitly.
+  compileOnly(libs.paperApi) {
+    attributes {
+      attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
+    }
+  }
   // Retain the Folia API surface for the optional region scheduler.
   compileOnly(libs.foliaApi)
   implementation(libs.paperTrail)
